@@ -22,7 +22,8 @@ import com.mixpanel.android.mpmetrics.MPMetrics;
 
 public class MainActivity extends Activity {
 
-	public static final String MIXPANEL_API_TOKEN = "YOUR API TOKEN HERE";
+	public static final String MIXPANEL_API_TOKEN = "24fcc08e84883f98e67ea0cfa75bf29f";
+	public static final String ANDROID_PUSH_SENDER_ID = "256980666236";
 	public static final String MIXPANEL_DISTINCT_ID_NAME = "Mixpanel $distinctid";
 	
     // Called when the user clicks the "OK" button
@@ -63,6 +64,7 @@ public class MainActivity extends Activity {
         
         mMPMetrics = MPMetrics.getInstance(this, MIXPANEL_API_TOKEN);
         mMPMetrics.identify(trackingDistinctId);
+        mMPMetrics.registerForPush(ANDROID_PUSH_SENDER_ID);
         
         setContentView(R.layout.activity_main);
     }
