@@ -5,7 +5,7 @@ can use Mixpanel in your Android apps.
 
 ## Getting Started
 
-The application is built using Eclipse. To import it into your workspace:
+The sample application is built using Eclipse. To import it into your workspace:
 
 - Clone this git repository (the instructions are at the top of the page)
 - Within Eclipse, go to "Import... > General > Existing Projects into Workspace"
@@ -54,7 +54,7 @@ Messaging is enabled, and provide an Google API key to Mixpanel
 
 This process is documented in more detail, including screenshots, at
 
-    https://mixpanel.com/docs/people-analytics/android-push
+https://mixpanel.com/docs/people-analytics/android-push
 
 ### To Enable Google Cloud Messaging
 
@@ -75,3 +75,16 @@ This process is documented in more detail, including screenshots, at
 
 Once you've added your keys to the source code and set up Mixpanel to
 send Google Cloud Messages, you're ready to build and deploy your application.
+
+## Getting More Information
+
+The Mixpanel Android integration API documentation is available on the Mixpanel website.
+
+For an overview of Mixpanel Android library features
+: https://mixpanel.com/docs/integration-libraries/android
+
+For details about setting up and implementing Google Cloud Messaging Notifications
+: https://mixpanel.com/docs/people-analytics/android-push
+
+For a detailed Android API reference
+: https://mixpanel.com/docs/integration-libraries/android-api-specification
