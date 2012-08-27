@@ -143,9 +143,7 @@ public class MainActivity extends Activity {
 
         // We also want to keep track of how many times the user
         // has updated their info.
-        Map<String, Long> incrementProperties = new HashMap<String, Long>();
-        incrementProperties.put("Update Count", 1L);
-        mMPMetrics.increment(incrementProperties);
+        mMPMetrics.increment("Update Count", 1L);
     }
 
     @Override
