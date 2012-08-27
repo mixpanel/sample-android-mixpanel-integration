@@ -1,3 +1,12 @@
+<?xml version="1.0"?>
+<!--
+  To get your application working with Mixpanel (particularly for push notifications),
+  you will need to make some changes to your application manifest file.
+
+  You can use this file as a model for the sorts of changes required. Be aware that
+  you will need to replace "com.mixpanel.example.hello" with your application package
+  name in several places before your application will work.
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mixpanel.example.hello"
     android:versionCode="1"
@@ -6,37 +15,60 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
-    
+
+    <!--
+      This permission is required to allow the application to send events and properties to Mixpanel.
+     -->
+     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--
+      These permissions are required to allow the application to receive and display
+      Google Cloud Messaging notifications from Mixpanel.
+     -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!--
+      This custom permission is also required for Google Cloud Messaging. In your
+      own applications, you will need to be sure that the permission name is
+
+           ${application_package}.C2D_MESSAGE
+
+      Where ${application_package} is the package name declared in your <manifest> element.
+     -->
     <permission android:name="com.mixpanel.example.hello.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="com.mixpanel.example.hello.permission.C2D_MESSAGE" />
-	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
-	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-	<uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.mixpanel.example.hello.permission.C2D_MESSAGE" />
 
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        
+
+        <!--
+         This declares that the app can handle the Google Cloud Messaging associated intents
+         -->
         <receiver android:name="com.mixpanel.android.mpmetrics.GCMReceiver" 
-        	android:permission="com.google.android.c2dm.permission.SEND" >
-    		<intent-filter>
-        		<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-        		<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-        		<category android:name="com.mixpanel.example.hello" />
-    		</intent-filter>
-		</receiver>
-        
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <!--
+                   In your own app, you'll need to change the android:name
+                   attribute below to contain your application package name.
+                -->
+                <category android:name="com.mixpanel.example.hello" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-    
 </manifest>
