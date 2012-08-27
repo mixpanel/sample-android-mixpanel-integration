@@ -1,0 +1,2 @@
+sample-android-mixpanel-integration
+===================================
