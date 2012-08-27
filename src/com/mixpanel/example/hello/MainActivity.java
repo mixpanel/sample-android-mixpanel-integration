@@ -155,8 +155,6 @@ public class MainActivity extends Activity {
         mMPMetrics.flushAll();
     }
 
-
-
     ////////////////////////////////////////////////////
 
 
@@ -179,37 +177,15 @@ public class MainActivity extends Activity {
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
 
-    // This is just an example of how we might generate distinct ids for users.
-    // In practice, there are serious advantages to associating these ids to your
-    // internal systems, or basing them on user provided login or identity information.
+    // These are toy disinct ids, here for the purposes of illustration.
+    // In practice, there are great advantages to using distinct ids that
+    // are easily associated with user identity, either from server-side
+    // sources, or user logins.
     private String generateDistinctId() {
-        String androidId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-        if (androidId == null) {
-            androidId = "";
-        }
-
         Random random = new Random();
         byte[] randomBytes = new byte[32];
         random.nextBytes(randomBytes);
-
-        Date now = new Date();
-        Long nowMs = Long.valueOf(now.getTime());
-
-        MessageDigest digest;
-
-        try {
-            digest = MessageDigest.getInstance("SHA-1");
-        }
-        catch(NoSuchAlgorithmException e) {
-            // This should never happen, "SHA-1" is one of the standard algorithm names
-            throw new RuntimeException("Cannot generate distinct user id");
-        }
-
-        digest.update(androidId.getBytes());
-        digest.update(randomBytes);
-        digest.update(nowMs.byteValue());
-
-        return Base64.encodeToString(digest.digest(), Base64.NO_WRAP | Base64.NO_PADDING);
+        return Base64.encodeToString(randomBytes, Base64.NO_WRAP | Base64.NO_PADDING);
     }
 
     private MPMetrics mMPMetrics;
