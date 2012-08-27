@@ -1,9 +1,6 @@
 package com.mixpanel.example.hello;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Random;
 
 import org.json.JSONException;
@@ -12,7 +9,6 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.View;
@@ -157,7 +153,6 @@ public class MainActivity extends Activity {
 
     ////////////////////////////////////////////////////
 
-
     private String getTrackingDistinctId() {
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
 
@@ -190,5 +185,5 @@ public class MainActivity extends Activity {
 
     private MPMetrics mMPMetrics;
 
-    private static final String MIXPANEL_DISTINCT_ID_NAME = "Mixpanel $distinctid";
+    private static final String MIXPANEL_DISTINCT_ID_NAME = "Mixpanel Example $distinctid";
 }
