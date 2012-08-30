@@ -81,7 +81,12 @@ public class MainActivity extends Activity {
         // register ourselves for push notifications from Mixpanel
         mMPMetrics = MPMetrics.getInstance(this, MIXPANEL_API_TOKEN);
         mMPMetrics.identify(trackingDistinctId);
-        mMPMetrics.registerForPush(ANDROID_PUSH_SENDER_ID);
+
+        // People analytics must be identified separately from event analytics.
+        // We recommend using the same identifier for both, and identifying
+        // as early as possible.
+        mMPMetrics.getPeople().identify(trackingDistinctId);
+        mMPMetrics.getPeople().registerForPush(ANDROID_PUSH_SENDER_ID);
 
         setContentView(R.layout.activity_main);
     }
@@ -119,25 +124,18 @@ public class MainActivity extends Activity {
         String lastName = lastNameEdit.getText().toString();
         String email = emailEdit.getText().toString();
 
+        MPMetrics.People people = mMPMetrics.getPeople();
 
-        // When the user clicks the "Send to Mixpanel" button in the UI,
-        // we want to use the information they have given us to update
-        // their Mixpanel people record. We do this with MPMetrics.set()
-        try {
-            JSONObject properties = new JSONObject();
-            properties.put("$first_name", firstName);
-            properties.put("$last_name", lastName);
-            properties.put("$email", email);
-            mMPMetrics.set(properties);
-        } catch(JSONException e) {
-            // This will only happen if the values are non-finite numbers
-            // or the keys are null, which should be impossible.
-            throw new RuntimeException("Could not encode form values as JSON");
-        }
+        // Update the basic data in the user's People Analytics record.
+        // Unlike events, People Analytics always stores the most recent value
+        // provided.
+        people.set("$first_name", firstName);
+        people.set("$last_name", lastName);
+        people.set("$email", email);
 
         // We also want to keep track of how many times the user
         // has updated their info.
-        mMPMetrics.increment("Update Count", 1L);
+        people.increment("Update Count", 1L);
     }
 
     @Override
