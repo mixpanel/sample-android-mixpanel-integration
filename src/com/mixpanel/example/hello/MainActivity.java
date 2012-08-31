@@ -1,6 +1,7 @@
 package com.mixpanel.example.hello;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import org.json.JSONException;
@@ -44,7 +45,7 @@ public class MainActivity extends Activity {
      *
      *   Paste it below (where you see "YOUR API TOKEN")
      */
-    public static final String MIXPANEL_API_TOKEN = "24fcc08e84883f98e67ea0cfa75bf29f";
+    public static final String MIXPANEL_API_TOKEN = "YOUR API TOKEN";
 
     /**
      * In order for your app to receive push notifications, you will need to enable
@@ -69,7 +70,7 @@ public class MainActivity extends Activity {
      * declare the permissions and receiver capabilities you'll need to get your push notifications working.
      * You can take a look at this application's AndroidManifest.xml file for an example of what is needed.
      */
-    public static final String ANDROID_PUSH_SENDER_ID = "256980666236";
+    public static final String ANDROID_PUSH_SENDER_ID = "YOUR SENDER ID";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,15 +102,37 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        // For our simple test app, we're interested in a single
-        // tracking a single Mixpanel event- when do users view our
-        // application in the foreground?
+        long nowInHours = hoursSinceEpoch();
+        int hourOfTheDay = hourOfTheDay();
+
+        // For our simple test app, we're interested tracking
+        // when the user views our application.
+
+        // It will be interesting to segment our data by the very first
+        // moment that the associated user viewed our app. We use a
+        // superProperty (so the value will always be sent with the
+        // remainder of our events) and register it with
+        // registerSuperPropertiesOnce (so no matter how many times
+        // the code below is run, the events will always be sent
+        // with the value of the first ever call for this user.)
         try {
             JSONObject properties = new JSONObject();
-            properties.put("hour of the day", hourOfTheDay());
+            properties.put("first viewed on", nowInHours);
+            properties.put("user domain", "(unknown)");
+            mMPMetrics.registerSuperPropertiesOnce(properties);
+        } catch (JSONException e) {
+            throw new RuntimeException("Could not encode hour first viewed as JSON");
+        }
+
+        // Now we send an event to Mixpanel. Unlike with superProperties, we
+        // want to send a new "App Resumed" event every time we are resumed, and
+        // we want to send a current value of "hour of the day" for every event.
+        try {
+            JSONObject properties = new JSONObject();
+            properties.put("hour of the day", hourOfTheDay);
             mMPMetrics.track("App Resumed", properties);
         } catch(JSONException e) {
-            throw new RuntimeException("Could not encode form values as JSON");
+            throw new RuntimeException("Could not encode hour of the day in JSON");
         }
     }
 
@@ -136,6 +159,21 @@ public class MainActivity extends Activity {
         // We also want to keep track of how many times the user
         // has updated their info.
         people.increment("Update Count", 1L);
+
+        // Mixpanel events are separate from Mixpanel people records,
+        // but it might be valuable to be able to query events by
+        // user domain (for example, if they represent customer organizations).
+        //
+        // We use the user domain as a superProperty here, but we call registerSuperProperties
+        // instead of registerSuperPropertiesOnce so we can overwrite old values
+        // as we get new information.
+        try {
+            JSONObject domainProperty = new JSONObject();
+            domainProperty.put("user domain", domainFromEmailAddress(email));
+            mMPMetrics.registerSuperProperties(domainProperty);
+        } catch (JSONException e) {
+            throw new RuntimeException("Cannot write user email address domain as a super property");
+        }
     }
 
     @Override
@@ -165,11 +203,6 @@ public class MainActivity extends Activity {
         return ret;
     }
 
-    private int hourOfTheDay() {
-        Calendar calendar = Calendar.getInstance();
-        return calendar.get(Calendar.HOUR_OF_DAY);
-    }
-
     // These are toy disinct ids, here for the purposes of illustration.
     // In practice, there are great advantages to using distinct ids that
     // are easily associated with user identity, either from server-side
@@ -179,6 +212,30 @@ public class MainActivity extends Activity {
         byte[] randomBytes = new byte[32];
         random.nextBytes(randomBytes);
         return Base64.encodeToString(randomBytes, Base64.NO_WRAP | Base64.NO_PADDING);
+    }
+
+    ///////////////////////////////////////////////////////
+    // Some conveniences
+
+    private int hourOfTheDay() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.HOUR_OF_DAY);
+    }
+
+    private long hoursSinceEpoch() {
+        Date now = new Date();
+        long nowMillis = now.getTime();
+        return nowMillis / 1000 * 60 * 60;
+    }
+
+    private String domainFromEmailAddress(String email) {
+        String ret = "";
+        int atSymbolIndex = email.indexOf('@');
+        if ((atSymbolIndex > -1) && (email.length() > atSymbolIndex)) {
+            ret = email.substring(atSymbolIndex + 1);
+        }
+
+        return ret;
     }
 
     private MPMetrics mMPMetrics;
