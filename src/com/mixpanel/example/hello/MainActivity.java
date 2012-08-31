@@ -35,7 +35,7 @@ import com.mixpanel.android.mpmetrics.MPMetrics;
  */
 public class MainActivity extends Activity {
 
-    /**
+    /*
      * You will use a Mixpanel API token to allow your app to send data to Mixpanel. To get your token
      * - Log in to Mixpanel, and select the project you want to use for this application
      * - Click the gear icon in the lower left corner of the screen to view the settings dialog
@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
      */
     public static final String MIXPANEL_API_TOKEN = "YOUR API TOKEN";
 
-    /**
+    /*
      * In order for your app to receive push notifications, you will need to enable
      * the Google Cloud Messaging for Android service in your Google APIs console. To do this:
      *
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
         // We recommend using the same identifier for both, and identifying
         // as early as possible.
         mMPMetrics.getPeople().identify(trackingDistinctId);
-        mMPMetrics.getPeople().registerForPush(ANDROID_PUSH_SENDER_ID);
+        mMPMetrics.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);
 
         setContentView(R.layout.activity_main);
     }
@@ -174,6 +174,13 @@ public class MainActivity extends Activity {
         } catch (JSONException e) {
             throw new RuntimeException("Cannot write user email address domain as a super property");
         }
+
+        // In addition to the update, it might be interesting to see when and how many
+        // users are updating their information, so we'll send an event as well.
+        // You can call track with null if you don't have any properties to add
+        // to an event (although superProperties will be added before the event
+        // is sent to Mixpanel)
+        mMPMetrics.track("update info button clicked", null);
     }
 
     @Override
@@ -182,9 +189,9 @@ public class MainActivity extends Activity {
 
         // To preserve battery life, the Mixpanel library will store
         // events rather than send them immediately. This means it
-        // is important to call flushAll() to send any unsent events
+        // is important to call flush() to send any unsent events
         // before your application is taken out of memory.
-        mMPMetrics.flushAll();
+        mMPMetrics.flush();
     }
 
     ////////////////////////////////////////////////////
@@ -215,7 +222,7 @@ public class MainActivity extends Activity {
     }
 
     ///////////////////////////////////////////////////////
-    // Some conveniences
+    // conveniences
 
     private int hourOfTheDay() {
         Calendar calendar = Calendar.getInstance();
