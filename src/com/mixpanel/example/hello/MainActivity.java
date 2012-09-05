@@ -81,11 +81,17 @@ public class MainActivity extends Activity {
         // We also identify the current user with a distinct ID, and
         // register ourselves for push notifications from Mixpanel
         mMPMetrics = MPMetrics.getInstance(this, MIXPANEL_API_TOKEN);
-        mMPMetrics.identify(trackingDistinctId);
+
+        // You can call enableLogAboutMessagesToMixpanel to see
+        // how messages are queued and sent to the Mixpanel servers.
+        // This is useful for debugging, but should be disabled in
+        // production code.
+        // mMPMetrics.enableLogAboutMessagesToMixpanel(true);
 
         // People analytics must be identified separately from event analytics.
         // We recommend using the same identifier for both, and identifying
         // as early as possible.
+        mMPMetrics.identify(trackingDistinctId);
         mMPMetrics.getPeople().identify(trackingDistinctId);
         mMPMetrics.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);
 
