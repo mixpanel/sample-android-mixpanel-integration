@@ -15,7 +15,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
-import com.mixpanel.android.mpmetrics.MPMetrics;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 /**
  * A little application that allows people to update their Mixpanel information,
@@ -80,20 +80,20 @@ public class MainActivity extends Activity {
         // Initialize the Mixpanel library for tracking and push notifications.
         // We also identify the current user with a distinct ID, and
         // register ourselves for push notifications from Mixpanel
-        mMPMetrics = MPMetrics.getInstance(this, MIXPANEL_API_TOKEN);
+        mMixpanel = MixpanelAPI.getInstance(this, MIXPANEL_API_TOKEN);
 
         // You can call enableLogAboutMessagesToMixpanel to see
         // how messages are queued and sent to the Mixpanel servers.
         // This is useful for debugging, but should be disabled in
         // production code.
-        // mMPMetrics.enableLogAboutMessagesToMixpanel(true);
+        // mMixpanel.enableLogAboutMessagesToMixpanel(true);
 
         // People analytics must be identified separately from event analytics.
         // We recommend using the same identifier for both, and identifying
         // as early as possible.
-        mMPMetrics.identify(trackingDistinctId);
-        mMPMetrics.getPeople().identify(trackingDistinctId);
-        mMPMetrics.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);
+        mMixpanel.identify(trackingDistinctId);
+        mMixpanel.getPeople().identify(trackingDistinctId);
+        mMixpanel.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);
 
         setContentView(R.layout.activity_main);
     }
@@ -125,7 +125,7 @@ public class MainActivity extends Activity {
             JSONObject properties = new JSONObject();
             properties.put("first viewed on", nowInHours);
             properties.put("user domain", "(unknown)");
-            mMPMetrics.registerSuperPropertiesOnce(properties);
+            mMixpanel.registerSuperPropertiesOnce(properties);
         } catch (JSONException e) {
             throw new RuntimeException("Could not encode hour first viewed as JSON");
         }
@@ -136,7 +136,7 @@ public class MainActivity extends Activity {
         try {
             JSONObject properties = new JSONObject();
             properties.put("hour of the day", hourOfTheDay);
-            mMPMetrics.track("App Resumed", properties);
+            mMixpanel.track("App Resumed", properties);
         } catch(JSONException e) {
             throw new RuntimeException("Could not encode hour of the day in JSON");
         }
@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
         String lastName = lastNameEdit.getText().toString();
         String email = emailEdit.getText().toString();
 
-        MPMetrics.People people = mMPMetrics.getPeople();
+        MixpanelAPI.People people = mMixpanel.getPeople();
 
         // Update the basic data in the user's People Analytics record.
         // Unlike events, People Analytics always stores the most recent value
@@ -176,7 +176,7 @@ public class MainActivity extends Activity {
         try {
             JSONObject domainProperty = new JSONObject();
             domainProperty.put("user domain", domainFromEmailAddress(email));
-            mMPMetrics.registerSuperProperties(domainProperty);
+            mMixpanel.registerSuperProperties(domainProperty);
         } catch (JSONException e) {
             throw new RuntimeException("Cannot write user email address domain as a super property");
         }
@@ -186,7 +186,7 @@ public class MainActivity extends Activity {
         // You can call track with null if you don't have any properties to add
         // to an event (although superProperties will be added before the event
         // is sent to Mixpanel)
-        mMPMetrics.track("update info button clicked", null);
+        mMixpanel.track("update info button clicked", null);
     }
 
     @Override
@@ -197,7 +197,7 @@ public class MainActivity extends Activity {
         // events rather than send them immediately. This means it
         // is important to call flush() to send any unsent events
         // before your application is taken out of memory.
-        mMPMetrics.flush();
+        mMixpanel.flush();
     }
 
     ////////////////////////////////////////////////////
@@ -251,7 +251,7 @@ public class MainActivity extends Activity {
         return ret;
     }
 
-    private MPMetrics mMPMetrics;
+    private MixpanelAPI mMixpanel;
 
     private static final String MIXPANEL_DISTINCT_ID_NAME = "Mixpanel Example $distinctid";
 }
