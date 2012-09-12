@@ -24,7 +24,7 @@ import com.mixpanel.android.mpmetrics.MixpanelAPI;
  * For more information about integrating Mixpanel with your Android application,
  * please check out:
  *
- *     https://mixpanel.com/docs/integration-libraries
+ *     https://mixpanel.com/docs/integration-libraries/android
  *
  * For instructions on enabling push notifications from Mixpanel, please see
  *
@@ -78,10 +78,21 @@ public class MainActivity extends Activity {
         String trackingDistinctId = getTrackingDistinctId();
 
         // Initialize the Mixpanel library for tracking and push notifications.
-        // We also identify the current user with a distinct ID, and
-        // register ourselves for push notifications from Mixpanel
         mMixpanel = MixpanelAPI.getInstance(this, MIXPANEL_API_TOKEN);
 
+        // We also identify the current user with a distinct ID, and
+        // register ourselves for push notifications from Mixpanel.
+        
+        mMixpanel.identify(trackingDistinctId); //this is the distinct_id value that  
+        // will be sent with events. If you choose not to set this, 
+        // the SDK will generate one for you
+        
+        mMixpanel.getPeople().identify(trackingDistinctId); //this is the distinct_id 
+        // that will be used for people analytics. You must set this explicitly in order 
+        // to dispatch people data.
+        
+        mMixpanel.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);        
+        
         // You can call enableLogAboutMessagesToMixpanel to see
         // how messages are queued and sent to the Mixpanel servers.
         // This is useful for debugging, but should be disabled in
@@ -89,11 +100,10 @@ public class MainActivity extends Activity {
         // mMixpanel.enableLogAboutMessagesToMixpanel(true);
 
         // People analytics must be identified separately from event analytics.
-        // We recommend using the same identifier for both, and identifying
-        // as early as possible.
-        mMixpanel.identify(trackingDistinctId);
-        mMixpanel.getPeople().identify(trackingDistinctId);
-        mMixpanel.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);
+        // The data-sets are separate, and may have different unique keys (distinct_id).
+        // We recommend using the same distinct_id value for a given user in both, 
+        // and identifying the user with that id as early as possible.
+
 
         setContentView(R.layout.activity_main);
     }
@@ -114,25 +124,27 @@ public class MainActivity extends Activity {
         // For our simple test app, we're interested tracking
         // when the user views our application.
 
-        // It will be interesting to segment our data by the very first
-        // moment that the associated user viewed our app. We use a
+        // It will be interesting to segment our data by the date that they 
+        // first viewed our app. We use a
         // superProperty (so the value will always be sent with the
         // remainder of our events) and register it with
         // registerSuperPropertiesOnce (so no matter how many times
         // the code below is run, the events will always be sent
         // with the value of the first ever call for this user.)
+        // all the change we make below are LOCAL. No API requests are made.
         try {
             JSONObject properties = new JSONObject();
             properties.put("first viewed on", nowInHours);
-            properties.put("user domain", "(unknown)");
+            properties.put("user domain", "(unknown)"); // default value
             mMixpanel.registerSuperPropertiesOnce(properties);
         } catch (JSONException e) {
             throw new RuntimeException("Could not encode hour first viewed as JSON");
         }
 
-        // Now we send an event to Mixpanel. Unlike with superProperties, we
-        // want to send a new "App Resumed" event every time we are resumed, and
+        // Now we send an event to Mixpanel. We want to send a new
+        // "App Resumed" event every time we are resumed, and
         // we want to send a current value of "hour of the day" for every event.
+        // As usual,all of the user's super properties will be appended onto this event.
         try {
             JSONObject properties = new JSONObject();
             properties.put("hour of the day", hourOfTheDay);
@@ -181,11 +193,12 @@ public class MainActivity extends Activity {
             throw new RuntimeException("Cannot write user email address domain as a super property");
         }
 
-        // In addition to the update, it might be interesting to see when and how many
-        // users are updating their information, so we'll send an event as well.
+        // In addition to viewing the updated record in mixpanel's UI, it might 
+        // be interesting to see when and how many and what types of users 
+        // are updating their information, so we'll send an event as well.
         // You can call track with null if you don't have any properties to add
-        // to an event (although superProperties will be added before the event
-        // is sent to Mixpanel)
+        // to an event (remember all the established superProperties will be added 
+        // before the event is dispatched to Mixpanel)
         mMixpanel.track("update info button clicked", null);
     }
 
@@ -216,10 +229,12 @@ public class MainActivity extends Activity {
         return ret;
     }
 
-    // These are toy disinct ids, here for the purposes of illustration.
+    // These disinct ids are here for the purposes of illustration.
     // In practice, there are great advantages to using distinct ids that
     // are easily associated with user identity, either from server-side
-    // sources, or user logins.
+    // sources, or user logins. A common best practice is to maintain a field
+    // in your users table to store mixpanel distinct_id, so it is easily 
+    // accesible for use in attributing cross platform or server side events.
     private String generateDistinctId() {
         Random random = new Random();
         byte[] randomBytes = new byte[32];
