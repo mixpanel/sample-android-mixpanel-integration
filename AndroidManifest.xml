@@ -44,24 +44,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
-        <!--
-         This declares that the app can handle the Google Cloud Messaging associated intents
-         -->
-        <receiver android:name="com.mixpanel.android.mpmetrics.GCMReceiver" 
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <!--
-                   In your own app, you'll need to change the android:name
-                   attribute below to contain your application package name.
-                -->
-                <category android:name="com.mixpanel.example.hello" />
-            </intent-filter>
-        </receiver>
-
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
