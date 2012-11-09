@@ -82,17 +82,17 @@ public class MainActivity extends Activity {
 
         // We also identify the current user with a distinct ID, and
         // register ourselves for push notifications from Mixpanel.
-        
-        mMixpanel.identify(trackingDistinctId); //this is the distinct_id value that  
-        // will be sent with events. If you choose not to set this, 
+
+        mMixpanel.identify(trackingDistinctId); //this is the distinct_id value that
+        // will be sent with events. If you choose not to set this,
         // the SDK will generate one for you
-        
-        mMixpanel.getPeople().identify(trackingDistinctId); //this is the distinct_id 
-        // that will be used for people analytics. You must set this explicitly in order 
+
+        mMixpanel.getPeople().identify(trackingDistinctId); //this is the distinct_id
+        // that will be used for people analytics. You must set this explicitly in order
         // to dispatch people data.
-        
-        mMixpanel.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);        
-        
+
+        mMixpanel.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);
+
         // You can call enableLogAboutMessagesToMixpanel to see
         // how messages are queued and sent to the Mixpanel servers.
         // This is useful for debugging, but should be disabled in
@@ -101,7 +101,7 @@ public class MainActivity extends Activity {
 
         // People analytics must be identified separately from event analytics.
         // The data-sets are separate, and may have different unique keys (distinct_id).
-        // We recommend using the same distinct_id value for a given user in both, 
+        // We recommend using the same distinct_id value for a given user in both,
         // and identifying the user with that id as early as possible.
 
 
@@ -124,7 +124,7 @@ public class MainActivity extends Activity {
         // For our simple test app, we're interested tracking
         // when the user views our application.
 
-        // It will be interesting to segment our data by the date that they 
+        // It will be interesting to segment our data by the date that they
         // first viewed our app. We use a
         // superProperty (so the value will always be sent with the
         // remainder of our events) and register it with
@@ -193,11 +193,11 @@ public class MainActivity extends Activity {
             throw new RuntimeException("Cannot write user email address domain as a super property");
         }
 
-        // In addition to viewing the updated record in mixpanel's UI, it might 
-        // be interesting to see when and how many and what types of users 
+        // In addition to viewing the updated record in mixpanel's UI, it might
+        // be interesting to see when and how many and what types of users
         // are updating their information, so we'll send an event as well.
         // You can call track with null if you don't have any properties to add
-        // to an event (remember all the established superProperties will be added 
+        // to an event (remember all the established superProperties will be added
         // before the event is dispatched to Mixpanel)
         mMixpanel.track("update info button clicked", null);
     }
@@ -233,7 +233,7 @@ public class MainActivity extends Activity {
     // In practice, there are great advantages to using distinct ids that
     // are easily associated with user identity, either from server-side
     // sources, or user logins. A common best practice is to maintain a field
-    // in your users table to store mixpanel distinct_id, so it is easily 
+    // in your users table to store mixpanel distinct_id, so it is easily
     // accesible for use in attributing cross platform or server side events.
     private String generateDistinctId() {
         Random random = new Random();
