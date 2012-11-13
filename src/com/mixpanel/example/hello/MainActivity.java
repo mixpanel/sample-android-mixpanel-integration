@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
         // how messages are queued and sent to the Mixpanel servers.
         // This is useful for debugging, but should be disabled in
         // production code.
-        // mMixpanel.enableLogAboutMessagesToMixpanel(true);
+        // mMixpanel.logPosts();
 
         // People analytics must be identified separately from event analytics.
         // The data-sets are separate, and may have different unique keys (distinct_id).
