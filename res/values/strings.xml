@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">Hello Mixpanel</string>
+	<string name="edit_first_name">First Name</string>
+	<string name="edit_last_name">Last Name</string>
+	<string name="edit_email_address">Email Address</string>
+	<string name="button_send">Send to Mixpanel</string>
+	<string name="menu_settings">Settings</string>
+    <string name="title_activity_main">Hello Mixpanel</string>
+
+</resources>
