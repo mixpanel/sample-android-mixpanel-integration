@@ -80,6 +80,7 @@ public class MainActivity extends Activity {
         // Initialize the Mixpanel library for tracking and push notifications.
         mMixpanel = MixpanelAPI.getInstance(this, MIXPANEL_API_TOKEN);
 
+
         // We also identify the current user with a distinct ID, and
         // register ourselves for push notifications from Mixpanel.
 
@@ -200,6 +201,12 @@ public class MainActivity extends Activity {
         // to an event (remember all the established superProperties will be added
         // before the event is dispatched to Mixpanel)
         mMixpanel.track("update info button clicked", null);
+    }
+
+    public void recordRevenue(View view) {
+        // This is an example of how you can use Mixpanel's revenue tracking features from Android.
+        MixpanelAPI.People people = mMixpanel.getPeople();
+        people.trackCharge(1.50, null);
     }
 
     @Override
