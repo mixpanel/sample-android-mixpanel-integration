@@ -8,14 +8,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.mixpanel.android.mpmetrics.Survey;
+import com.mixpanel.android.mpmetrics.SurveyCallbacks;
 
 /**
  * A little application that allows people to update their Mixpanel information,
@@ -75,7 +87,7 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String trackingDistinctId = getTrackingDistinctId();
+        final String trackingDistinctId = getTrackingDistinctId();
 
         // Initialize the Mixpanel library for tracking and push notifications.
         mMixpanel = MixpanelAPI.getInstance(this, MIXPANEL_API_TOKEN);
@@ -92,6 +104,11 @@ public class MainActivity extends Activity {
         // that will be used for people analytics. You must set this explicitly in order
         // to dispatch people data.
 
+        // People analytics must be identified separately from event analytics.
+        // The data-sets are separate, and may have different unique keys (distinct_id).
+        // We recommend using the same distinct_id value for a given user in both,
+        // and identifying the user with that id as early as possible.
+
         mMixpanel.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);
 
         // You can call enableLogAboutMessagesToMixpanel to see
@@ -99,11 +116,6 @@ public class MainActivity extends Activity {
         // This is useful for debugging, but should be disabled in
         // production code.
         // mMixpanel.logPosts();
-
-        // People analytics must be identified separately from event analytics.
-        // The data-sets are separate, and may have different unique keys (distinct_id).
-        // We recommend using the same distinct_id value for a given user in both,
-        // and identifying the user with that id as early as possible.
 
 
         setContentView(R.layout.activity_main);
@@ -119,8 +131,8 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        long nowInHours = hoursSinceEpoch();
-        int hourOfTheDay = hourOfTheDay();
+        final long nowInHours = hoursSinceEpoch();
+        final int hourOfTheDay = hourOfTheDay();
 
         // For our simple test app, we're interested tracking
         // when the user views our application.
@@ -134,7 +146,7 @@ public class MainActivity extends Activity {
         // with the value of the first ever call for this user.)
         // all the change we make below are LOCAL. No API requests are made.
         try {
-            JSONObject properties = new JSONObject();
+            final JSONObject properties = new JSONObject();
             properties.put("first viewed on", nowInHours);
             properties.put("user domain", "(unknown)"); // default value
             mMixpanel.registerSuperPropertiesOnce(properties);
@@ -147,7 +159,7 @@ public class MainActivity extends Activity {
         // we want to send a current value of "hour of the day" for every event.
         // As usual,all of the user's super properties will be appended onto this event.
         try {
-            JSONObject properties = new JSONObject();
+            final JSONObject properties = new JSONObject();
             properties.put("hour of the day", hourOfTheDay);
             mMixpanel.track("App Resumed", properties);
         } catch(JSONException e) {
@@ -156,15 +168,18 @@ public class MainActivity extends Activity {
     }
 
     // Associated with the "Send to Mixpanel" button in activity_main.xml
-    public void sendToMixpanel(View view) {
+    // In this method, we update a Mixpanel people profile using MixpanelAPI.People.set()
+    // and set some persistent properties that will be sent with
+    // all future track() calls using MixpanelAPI.registerSuperProperties()
+    public void sendToMixpanel(final View view) {
 
-        EditText firstNameEdit = (EditText) findViewById(R.id.edit_first_name);
-        EditText lastNameEdit = (EditText) findViewById(R.id.edit_last_name);
-        EditText emailEdit = (EditText) findViewById(R.id.edit_email_address);
+        final EditText firstNameEdit = (EditText) findViewById(R.id.edit_first_name);
+        final EditText lastNameEdit = (EditText) findViewById(R.id.edit_last_name);
+        final EditText emailEdit = (EditText) findViewById(R.id.edit_email_address);
 
-        String firstName = firstNameEdit.getText().toString();
-        String lastName = lastNameEdit.getText().toString();
-        String email = emailEdit.getText().toString();
+        final String firstName = firstNameEdit.getText().toString();
+        final String lastName = lastNameEdit.getText().toString();
+        final String email = emailEdit.getText().toString();
 
         MixpanelAPI.People people = mMixpanel.getPeople();
 
@@ -187,7 +202,7 @@ public class MainActivity extends Activity {
         // instead of registerSuperPropertiesOnce so we can overwrite old values
         // as we get new information.
         try {
-            JSONObject domainProperty = new JSONObject();
+            final JSONObject domainProperty = new JSONObject();
             domainProperty.put("user domain", domainFromEmailAddress(email));
             mMixpanel.registerSuperProperties(domainProperty);
         } catch (JSONException e) {
@@ -203,10 +218,24 @@ public class MainActivity extends Activity {
         mMixpanel.track("update info button clicked", null);
     }
 
-    public void recordRevenue(View view) {
-        // This is an example of how you can use Mixpanel's revenue tracking features from Android.
-        MixpanelAPI.People people = mMixpanel.getPeople();
+    // This is an example of how you can use Mixpanel's revenue tracking features from Android.
+    public void recordRevenue(final View view) {
+        final MixpanelAPI.People people = mMixpanel.getPeople();
+        // Call trackCharge() with a floating point amount
+        // (for example, the amount of money the user has just spent on a purchase)
+        // and an optional set of properties describing the purchase.
         people.trackCharge(1.50, null);
+    }
+
+    public void checkForSurveys(final View view) { // TODO Shouldn't merge into master, we should encourage automatic surveys
+        mMixpanel.getPeople().checkForSurvey(new SurveyCallbacks() {
+            public void foundSurvey(Survey s) {
+                Log.i("TODO Sample app", "GOT SURVEY " + s);
+                if (null != s) {
+                    mMixpanel.getPeople().showSurvey(s, view);
+                }
+            }
+        });
     }
 
     @Override
@@ -221,6 +250,33 @@ public class MainActivity extends Activity {
     }
 
     ////////////////////////////////////////////////////
+
+    public void setBackgroundImage(final View view) {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, PHOTO_WAS_PICKED);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (PHOTO_WAS_PICKED == requestCode && null != data) {
+            final Uri imageUri = data.getData();
+            if (null != imageUri) {
+                // AsyncTask, please...
+                final ContentResolver contentResolver = getContentResolver();
+                final Cursor cursor = contentResolver.query(
+                        imageUri,
+                        new String[] { android.provider.MediaStore.Images.ImageColumns.DATA },
+                        null, null, null);
+                cursor.moveToFirst();
+                final String imageFilePath = cursor.getString(0);
+                cursor.close();
+
+                final Bitmap background = BitmapFactory.decodeFile(imageFilePath);
+                getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), background));
+            }
+        }
+    }
 
     private String getTrackingDistinctId() {
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
@@ -274,6 +330,6 @@ public class MainActivity extends Activity {
     }
 
     private MixpanelAPI mMixpanel;
-
     private static final String MIXPANEL_DISTINCT_ID_NAME = "Mixpanel Example $distinctid";
+    private static final int PHOTO_WAS_PICKED = 2;
 }

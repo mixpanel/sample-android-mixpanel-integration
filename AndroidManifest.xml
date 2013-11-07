@@ -14,12 +14,18 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="15" />
+        android:targetSdkVersion="18" />
 
     <!--
       This permission is required to allow the application to send events and properties to Mixpanel.
      -->
      <uses-permission android:name="android.permission.INTERNET" />
+
+     <!--
+      This permission allows you to see the Bluetooth state of the device.
+      It's optional, but often useful.
+      -->
+    <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
 
     <!--
       These permissions are required to allow the application to receive and display
@@ -53,6 +59,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.mixpanel.android.surveys.SurveyActivity" />
         <receiver android:name="com.mixpanel.android.mpmetrics.GCMReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
