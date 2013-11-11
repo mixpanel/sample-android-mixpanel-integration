@@ -1,14 +1,27 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+    }
+}
+
 apply plugin: 'android'
+
+repositories {
+    mavenLocal()
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile project(':mixpanel-android')
-    compile project(':mixpanel-android')
+    compile "com.mixpanel.android:mixpanel-android:+"
+
 }
 
 android {
-    compileSdkVersion 10
-    buildToolsVersion "18.1.1"
+    compileSdkVersion 18
+    buildToolsVersion "17.0.0"
 
     sourceSets {
         main {
