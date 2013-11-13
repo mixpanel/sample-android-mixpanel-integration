@@ -11,12 +11,11 @@ apply plugin: 'android'
 
 repositories {
     mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
     compile "com.mixpanel.android:mixpanel-android:+"
-
 }
 
 android {
