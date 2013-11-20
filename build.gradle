@@ -10,12 +10,12 @@ buildscript {
 apply plugin: 'android'
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-    compile "com.mixpanel.android:mixpanel-android:+"
+    // for some reason, the signed pom specifies a package type of aar.asc, adding @aar resolves the correct file
+    compile "com.mixpanel.android:mixpanel-android:4.0.0-RC1@aar"
 }
 
 android {
