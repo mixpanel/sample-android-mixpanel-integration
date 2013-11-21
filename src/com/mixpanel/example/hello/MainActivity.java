@@ -1,12 +1,5 @@
 package com.mixpanel.example.hello;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -16,18 +9,24 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.mixpanel.android.mpmetrics.Survey;
 import com.mixpanel.android.mpmetrics.SurveyCallbacks;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
 /**
  * A little application that allows people to update their Mixpanel information,
@@ -87,10 +86,28 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        String token = prefs.getString(MIXPANEL_TOKEN_NAME, null);
+        if (token == null) {
+            token = MIXPANEL_API_TOKEN;
+        }
+
+        initMixpanel(token);
+
+    }
+
+    public void initMixpanel(String token) {
         final String trackingDistinctId = getTrackingDistinctId();
 
+        TextView curToken = (TextView) findViewById(R.id.current_token);
+        curToken.setText(token);
+        EditText editTokenText = (EditText) findViewById(R.id.edit_token);
+        editTokenText.setText("");
+
         // Initialize the Mixpanel library for tracking and push notifications.
-        mMixpanel = MixpanelAPI.getInstance(this, MIXPANEL_API_TOKEN);
+        mMixpanel = MixpanelAPI.getInstance(this, token);
 
 
         // We also identify the current user with a distinct ID, and
@@ -117,10 +134,12 @@ public class MainActivity extends Activity {
         // production code.
         // mMixpanel.logPosts();
 
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putString(MIXPANEL_TOKEN_NAME, token);
+        prefsEditor.commit();
 
-        setContentView(R.layout.activity_main);
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -165,6 +184,33 @@ public class MainActivity extends Activity {
         } catch(JSONException e) {
             throw new RuntimeException("Could not encode hour of the day in JSON");
         }
+    }
+
+
+
+    public void updateToken(final View view) {
+        EditText editText = (EditText) findViewById(R.id.edit_token);
+        if (editText != null && editText.getText() != null) {
+            initMixpanel(editText.getText().toString());
+        } else {
+            Log.d("Mixpanel Sample App", "editText or editText getText() was null");
+        }
+    }
+
+
+
+    // Associated with the "Send dummy event" button in activity_main.xml
+    // In this method, we simply send a dummy event to mixpanel using the track call
+    public void sendDummyEvent(final View view) {
+        final JSONObject properties = new JSONObject();
+        try {
+            properties.put("date", (new Date()).toString());
+            properties.put("Test Property", "Made it!");
+        } catch (JSONException e) {
+            throw new RuntimeException("Could not encode dummy properties JSON");
+        }
+        mMixpanel.track("Dummy Event", properties);
+        mMixpanel.flush();
     }
 
     // Associated with the "Send to Mixpanel" button in activity_main.xml
@@ -329,7 +375,10 @@ public class MainActivity extends Activity {
         return ret;
     }
 
+
+
     private MixpanelAPI mMixpanel;
     private static final String MIXPANEL_DISTINCT_ID_NAME = "Mixpanel Example $distinctid";
+    private static final String MIXPANEL_TOKEN_NAME = "Mixpanel Example $token";
     private static final int PHOTO_WAS_PICKED = 2;
 }

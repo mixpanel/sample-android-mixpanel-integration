@@ -1,13 +1,16 @@
 <?xml version="1.0" ?>
 <resources>
     <string name="app_name">Hello Mixpanel</string>
+    <string name="edit_token">Project Token</string>
     <string name="edit_first_name">First Name</string>
     <string name="edit_last_name">Last Name</string>
     <string name="edit_email_address">Email Address</string>
-    <string name="button_send">Send to Mixpanel</string>
+    <string name="button_send">Set as People Profile</string>
     <string name="button_buy">Send Revenue</string>
     <string name="button_surveys">Find Survey</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Hello Mixpanel</string>
     <string name="button_background">Set background image</string>
+    <string name="button_event">Send dummy event</string>
+    <string name="button_update_token">Update Token</string>
 </resources>
