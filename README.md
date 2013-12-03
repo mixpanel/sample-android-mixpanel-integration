@@ -5,11 +5,34 @@ can use Mixpanel in your Android apps.
 
 ## Getting Started
 
-The sample application is built using Eclipse. To import it into your workspace:
+The sample application can be build using either Android Studio or Eclipse.
+
+### Using Android Studio
+Integration in Android Studio is very simple.
+
+- Clone this git repository (the instructions are at the top of the page)
+- Within Android Studio, go to "File > Import Project"
+- Select the directory you just cloned.
+- When the gradle popup shows up, choose "use gradle default wrapper (recommended)" and click OK
+
+You should now be able to run the sample application
+
+### Using Eclipse
+To import it into your workspace:
 
 - Clone this git repository (the instructions are at the top of the page)
 - Within Eclipse, go to "Import... > General > Existing Projects into Workspace"
 - Select the directory you just cloned.
+
+Next you'll need to import the mixpanel-android library and associate it as a dependency
+(see http://mixpanel.com/help/reference/android#installing-eclipse for more details)
+
+- Download and extract the latest release from https://github.com/mixpanel/mixpanel-android/releases/tag/latest
+- Within Eclipse, go to "Import... > General > Existing Projects into Workspace"
+- Select the directory you extract the latest release to.
+- Within Eclipse, right click on the "sample-android-mixpanel-integration" project and choose "Properties"
+- On the "Android" tab look for the "Libraries" section and click "Add"
+- Choose the "mixpanel-android" library and click "OK"
 
 You will also need to add your Mixpanel API token and your Android
 Push Sender id to the source code, and enable Mixpanel to send Google
@@ -76,15 +99,18 @@ https://mixpanel.com/docs/people-analytics/android-push
 Once you've added your keys to the source code and set up Mixpanel to
 send Google Cloud Messages, you're ready to build and deploy your application.
 
+## Surveys
+See http://mixpanel.com/help/reference/android#surveys
+
 ## Getting More Information
 
 The Mixpanel Android integration API documentation is available on the Mixpanel website.
 
 For an overview of Mixpanel Android library features
-: https://mixpanel.com/docs/integration-libraries/android
+: https://mixpanel.com/help/reference/android
 
 For details about setting up and implementing Google Cloud Messaging Notifications
-: https://mixpanel.com/docs/people-analytics/android-push
+: https://mixpanel.com/help/reference/android-push-notifications
 
 For a detailed Android API reference
-: https://mixpanel.com/docs/integration-libraries/android-api-specification
+: http://mixpanel.github.io/mixpanel-android/index.html

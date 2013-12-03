@@ -19,13 +19,17 @@
     <!--
       This permission is required to allow the application to send events and properties to Mixpanel.
      -->
-     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
-     <!--
-      This permission allows you to see the Bluetooth state of the device.
-      It's optional, but often useful.
-      -->
-    <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
+    <!--
+      This permission is optional but recommended so we can be smart about when to send data.
+     -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!--
+      This permission is optional but recommended so events will contain information about bluetooth state
+    -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <!--
       These permissions are required to allow the application to receive and display
