@@ -37,12 +37,6 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_surveys"
-        android:onClick="checkForSurveys" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/button_background"
         android:onClick="setBackgroundImage" />
 </LinearLayout>

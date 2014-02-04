@@ -6,7 +6,6 @@
     <string name="edit_email_address">Email Address</string>
     <string name="button_send">Send to Mixpanel</string>
     <string name="button_buy">Send Revenue</string>
-    <string name="button_surveys">Find Survey</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Hello Mixpanel</string>
     <string name="button_background">Set background image</string>

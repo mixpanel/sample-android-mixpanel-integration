@@ -16,9 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -150,7 +148,7 @@ public class MainActivity extends Activity {
             properties.put("first viewed on", nowInHours);
             properties.put("user domain", "(unknown)"); // default value
             mMixpanel.registerSuperPropertiesOnce(properties);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             throw new RuntimeException("Could not encode hour first viewed as JSON");
         }
 
@@ -162,7 +160,7 @@ public class MainActivity extends Activity {
             final JSONObject properties = new JSONObject();
             properties.put("hour of the day", hourOfTheDay);
             mMixpanel.track("App Resumed", properties);
-        } catch(JSONException e) {
+        } catch(final JSONException e) {
             throw new RuntimeException("Could not encode hour of the day in JSON");
         }
     }
@@ -181,7 +179,7 @@ public class MainActivity extends Activity {
         final String lastName = lastNameEdit.getText().toString();
         final String email = emailEdit.getText().toString();
 
-        MixpanelAPI.People people = mMixpanel.getPeople();
+        final MixpanelAPI.People people = mMixpanel.getPeople();
 
         // Update the basic data in the user's People Analytics record.
         // Unlike events, People Analytics always stores the most recent value
@@ -205,7 +203,7 @@ public class MainActivity extends Activity {
             final JSONObject domainProperty = new JSONObject();
             domainProperty.put("user domain", domainFromEmailAddress(email));
             mMixpanel.registerSuperProperties(domainProperty);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             throw new RuntimeException("Cannot write user email address domain as a super property");
         }
 
@@ -227,17 +225,6 @@ public class MainActivity extends Activity {
         people.trackCharge(1.50, null);
     }
 
-    public void checkForSurveys(final View view) { // TODO Shouldn't merge into master, we should encourage automatic surveys
-        mMixpanel.getPeople().checkForSurvey(new SurveyCallbacks() {
-            public void foundSurvey(Survey s) {
-                Log.i("TODO Sample app", "GOT SURVEY " + s);
-                if (null != s) {
-                    mMixpanel.getPeople().showSurvey(s, view);
-                }
-            }
-        });
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -252,7 +239,7 @@ public class MainActivity extends Activity {
     ////////////////////////////////////////////////////
 
     public void setBackgroundImage(final View view) {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        final Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, PHOTO_WAS_PICKED);
     }
@@ -279,12 +266,12 @@ public class MainActivity extends Activity {
     }
 
     private String getTrackingDistinctId() {
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        final SharedPreferences prefs = getPreferences(MODE_PRIVATE);
 
         String ret = prefs.getString(MIXPANEL_DISTINCT_ID_NAME, null);
         if (ret == null) {
             ret = generateDistinctId();
-            SharedPreferences.Editor prefsEditor = prefs.edit();
+            final SharedPreferences.Editor prefsEditor = prefs.edit();
             prefsEditor.putString(MIXPANEL_DISTINCT_ID_NAME, ret);
             prefsEditor.commit();
         }
@@ -299,8 +286,8 @@ public class MainActivity extends Activity {
     // in your users table to store mixpanel distinct_id, so it is easily
     // accesible for use in attributing cross platform or server side events.
     private String generateDistinctId() {
-        Random random = new Random();
-        byte[] randomBytes = new byte[32];
+        final Random random = new Random();
+        final byte[] randomBytes = new byte[32];
         random.nextBytes(randomBytes);
         return Base64.encodeToString(randomBytes, Base64.NO_WRAP | Base64.NO_PADDING);
     }
@@ -309,19 +296,19 @@ public class MainActivity extends Activity {
     // conveniences
 
     private int hourOfTheDay() {
-        Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
 
     private long hoursSinceEpoch() {
-        Date now = new Date();
-        long nowMillis = now.getTime();
+        final Date now = new Date();
+        final long nowMillis = now.getTime();
         return nowMillis / 1000 * 60 * 60;
     }
 
     private String domainFromEmailAddress(String email) {
         String ret = "";
-        int atSymbolIndex = email.indexOf('@');
+        final int atSymbolIndex = email.indexOf('@');
         if ((atSymbolIndex > -1) && (email.length() > atSymbolIndex)) {
             ret = email.substring(atSymbolIndex + 1);
         }
