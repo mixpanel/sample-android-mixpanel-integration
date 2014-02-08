@@ -18,14 +18,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
-import com.mixpanel.android.mpmetrics.Survey;
-import com.mixpanel.android.mpmetrics.SurveyCallbacks;
 
 /**
  * A little application that allows people to update their Mixpanel information,
