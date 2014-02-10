@@ -1,5 +1,7 @@
 package com.mixpanel.example.hello;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -11,13 +13,13 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -248,16 +250,14 @@ public class MainActivity extends Activity {
             if (null != imageUri) {
                 // AsyncTask, please...
                 final ContentResolver contentResolver = getContentResolver();
-                final Cursor cursor = contentResolver.query(
-                        imageUri,
-                        new String[] { android.provider.MediaStore.Images.ImageColumns.DATA },
-                        null, null, null);
-                cursor.moveToFirst();
-                final String imageFilePath = cursor.getString(0);
-                cursor.close();
-
-                final Bitmap background = BitmapFactory.decodeFile(imageFilePath);
-                getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), background));
+                try {
+                    final InputStream imageStream = contentResolver.openInputStream(imageUri);
+                    System.out.println("DRAWING IMAGE FROM URI " + imageUri);
+                    final Bitmap background = BitmapFactory.decodeStream(imageStream);
+                    getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), background));
+                } catch (final FileNotFoundException e) {
+                    Log.e(LOGTAG, "Image apparently has gone away", e);
+                }
             }
         }
     }
@@ -316,4 +316,5 @@ public class MainActivity extends Activity {
     private MixpanelAPI mMixpanel;
     private static final String MIXPANEL_DISTINCT_ID_NAME = "Mixpanel Example $distinctid";
     private static final int PHOTO_WAS_PICKED = 2;
+    private static final String LOGTAG = "Mixpanel Example Application";
 }
