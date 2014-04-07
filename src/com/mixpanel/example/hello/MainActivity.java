@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
      *
      *   Paste it below (where you see "YOUR API TOKEN")
      */
-    public static final String MIXPANEL_API_TOKEN = "YOUR API TOKEN";
+    public static final String MIXPANEL_API_TOKEN = "5210a76830423a281f7c3032272e8e29";
 
     /*
      * In order for your app to receive push notifications, you will need to enable
@@ -88,18 +88,20 @@ public class MainActivity extends Activity {
 
         // Initialize the Mixpanel library for tracking and push notifications.
         mMixpanel = MixpanelAPI.getInstance(this, MIXPANEL_API_TOKEN);
-
+        mMixpanel2 = MixpanelAPI.getInstance(this, "394d689aae1dfe39626a8bd35d421797");
 
         // We also identify the current user with a distinct ID, and
         // register ourselves for push notifications from Mixpanel.
 
-        mMixpanel.identify(trackingDistinctId); //this is the distinct_id value that
+        mMixpanel.identify("some id"); //this is the distinct_id value that
         // will be sent with events. If you choose not to set this,
         // the SDK will generate one for you
+        mMixpanel2.identify("some id");
 
-        mMixpanel.getPeople().identify(trackingDistinctId); //this is the distinct_id
+        mMixpanel.getPeople().identify("some id"); //this is the distinct_id
         // that will be used for people analytics. You must set this explicitly in order
         // to dispatch people data.
+        mMixpanel2.getPeople().identify("some id");
 
         // People analytics must be identified separately from event analytics.
         // The data-sets are separate, and may have different unique keys (distinct_id).
@@ -179,6 +181,7 @@ public class MainActivity extends Activity {
         final String email = emailEdit.getText().toString();
 
         final MixpanelAPI.People people = mMixpanel.getPeople();
+        final MixpanelAPI.People people2 = mMixpanel2.getPeople();
 
         // Update the basic data in the user's People Analytics record.
         // Unlike events, People Analytics always stores the most recent value
@@ -186,6 +189,9 @@ public class MainActivity extends Activity {
         people.set("$first_name", firstName);
         people.set("$last_name", lastName);
         people.set("$email", email);
+        people2.set("$first_name", firstName);
+        people2.set("$last_name", lastName);
+        people2.set("$email", email);
 
         // We also want to keep track of how many times the user
         // has updated their info.
@@ -314,6 +320,7 @@ public class MainActivity extends Activity {
     }
 
     private MixpanelAPI mMixpanel;
+    private MixpanelAPI mMixpanel2;
     private static final String MIXPANEL_DISTINCT_ID_NAME = "Mixpanel Example $distinctid";
     private static final int PHOTO_WAS_PICKED = 2;
     private static final String LOGTAG = "Mixpanel Example Application";
