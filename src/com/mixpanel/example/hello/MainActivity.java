@@ -9,7 +9,9 @@ import java.util.Random;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -24,7 +27,11 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
+import com.mixpanel.android.mpmetrics.InAppFragment;
+import com.mixpanel.android.mpmetrics.InAppNotification;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.mixpanel.android.mpmetrics.UpdateDisplayState;
+import com.mixpanel.android.util.ActivityImageUtils;
 
 /**
  * A little application that allows people to update their Mixpanel information,
@@ -247,6 +254,39 @@ public class MainActivity extends Activity {
         final Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, PHOTO_WAS_PICKED);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public void showMiniNotification(final View view) {
+        JSONObject j = new JSONObject();
+        try {
+            j.put("id", 123);
+            j.put("message_id", 456);
+            j.put("type", InAppNotification.Type.MINI.toString());
+            j.put("title", "test in app notification");
+            j.put("body", "in app notification body");
+            j.put("image_url", "http://www.example.com");
+            j.put("cta", "go go go");
+            j.put("cta_url", "http://news.ycombinator.com");
+        } catch (JSONException e) { }
+
+        InAppNotification notif = null;
+        try {
+            notif = new InAppNotification(j);
+        } catch (Exception e) { }
+        notif.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.icon_phone));
+
+        final int highlightColor = ActivityImageUtils.getHighlightColorFromBackground(this);
+        final UpdateDisplayState.DisplayState.InAppNotificationState proposal =
+                new UpdateDisplayState.DisplayState.InAppNotificationState(notif, highlightColor);
+
+        InAppFragment inapp = new InAppFragment();
+        inapp.setDisplayState(1, proposal);
+        inapp.setRetainInstance(true);
+        FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(0, R.anim.com_mixpanel_android_slide_down);
+        transaction.add(android.R.id.content, inapp);
+        transaction.commit();
     }
 
     @Override
