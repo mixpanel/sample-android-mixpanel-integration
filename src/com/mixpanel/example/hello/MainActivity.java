@@ -270,7 +270,7 @@ public class MainActivity extends Activity {
             final Survey s = new Survey(j);
 
             BackgroundCapture.captureBackground(this, new BackgroundCapture.OnBackgroundCapturedListener() {
-                public void OnBackgroundCaptured(Bitmap bitmapCaptured, int highlightColorCaptured) {
+                public void onBackgroundCaptured(Bitmap bitmapCaptured, int highlightColorCaptured) {
                     final UpdateDisplayState.DisplayState surveyDisplay =
                             new UpdateDisplayState.DisplayState.SurveyState(s, highlightColorCaptured, bitmapCaptured);
                     final int intentId = UpdateDisplayState.proposeDisplay(surveyDisplay, "ASDF", "ASDF");
