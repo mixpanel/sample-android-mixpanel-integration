@@ -31,6 +31,7 @@ import com.mixpanel.android.mpmetrics.InAppFragment;
 import com.mixpanel.android.mpmetrics.InAppNotification;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.mixpanel.android.mpmetrics.UpdateDisplayState;
+import com.mixpanel.android.surveys.SurveyActivity;
 import com.mixpanel.android.util.ActivityImageUtils;
 
 /**
@@ -287,6 +288,37 @@ public class MainActivity extends Activity {
         transaction.setCustomAnimations(0, R.anim.com_mixpanel_android_slide_down);
         transaction.add(android.R.id.content, inapp);
         transaction.commit();
+    }
+
+    public void showTakeoverNotification(final View view) {
+        JSONObject j = new JSONObject();
+        try {
+            j.put("id", 123);
+            j.put("message_id", 456);
+            j.put("type", InAppNotification.Type.TAKEOVER.toString());
+            j.put("title", "test in app notification");
+            j.put("body", "in app notification body");
+            j.put("image_url", "http://www.example.com");
+            j.put("cta", "go go go");
+            j.put("cta_url", "http://news.ycombinator.com");
+        } catch (JSONException e) { }
+
+        InAppNotification notif = null;
+        try {
+            notif = new InAppNotification(j);
+        } catch (Exception e) { }
+        notif.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.bridge));
+
+        final int highlightColor = ActivityImageUtils.getHighlightColorFromBackground(this);
+        final UpdateDisplayState.DisplayState.InAppNotificationState proposal =
+                new UpdateDisplayState.DisplayState.InAppNotificationState(notif, highlightColor);
+        final int intentId = UpdateDisplayState.proposeDisplay(proposal, "asdf", "asdf");
+
+        final Intent intent = new Intent(getApplicationContext(), SurveyActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.putExtra(SurveyActivity.INTENT_ID_KEY, intentId);
+        startActivity(intent);
     }
 
     @Override
