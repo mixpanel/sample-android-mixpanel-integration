@@ -27,9 +27,11 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
+import com.mixpanel.android.mpmetrics.BackgroundCapture;
 import com.mixpanel.android.mpmetrics.InAppFragment;
 import com.mixpanel.android.mpmetrics.InAppNotification;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.mixpanel.android.mpmetrics.Survey;
 import com.mixpanel.android.mpmetrics.UpdateDisplayState;
 import com.mixpanel.android.surveys.SurveyActivity;
 import com.mixpanel.android.util.ActivityImageUtils;
@@ -257,6 +259,35 @@ public class MainActivity extends Activity {
         startActivityForResult(photoPickerIntent, PHOTO_WAS_PICKED);
     }
 
+    public void showSurvey(final View view) {
+        try {
+            JSONObject j = new JSONObject(
+                "{\"collections\":[{\"id\":5575,\"name\":\"adf\"}],\"id\":6599,\"questions\":[{\"prompt\":" +
+                "\"test\",\"extra_data\":{\"$choices\":[\"testdga\",\"test2sdfbsbg\"]},\"type\":\"multiple" +
+                "_choice\",\"id\":9779},{\"prompt\":\"dsafdsgerg\",\"extra_data\":{},\"type\":\"text\",\"id\"" +
+                ":9781}],\"name\":\"asdf\"}"
+            );
+            final Survey s = new Survey(j);
+
+            BackgroundCapture.captureBackground(this, new BackgroundCapture.OnBackgroundCapturedListener() {
+                public void OnBackgroundCaptured(Bitmap bitmapCaptured, int highlightColorCaptured) {
+                    final UpdateDisplayState.DisplayState surveyDisplay =
+                            new UpdateDisplayState.DisplayState.SurveyState(s, highlightColorCaptured, bitmapCaptured);
+                    final int intentId = UpdateDisplayState.proposeDisplay(surveyDisplay, "ASDF", "ASDF");
+                    assert intentId > 0; // Since we hold the lock, and !hasCurrentProposal
+
+                    final Intent surveyIntent = new Intent(getApplicationContext(), SurveyActivity.class);
+                    surveyIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    surveyIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    surveyIntent.putExtra(SurveyActivity.INTENT_ID_KEY, intentId);
+                    startActivity(surveyIntent);
+                }
+            });
+        } catch (Exception e) {
+            Log.e("ASDF", "", e);
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void showMiniNotification(final View view) {
         JSONObject j = new JSONObject();
@@ -264,8 +295,8 @@ public class MainActivity extends Activity {
             j.put("id", 123);
             j.put("message_id", 456);
             j.put("type", InAppNotification.Type.MINI.toString());
-            j.put("title", "test in app notification");
-            j.put("body", "in app notification body");
+            j.put("title", "Waste some more money on our in app purchases!");
+            j.put("body", "Hey, check out this awesome in app notification!");
             j.put("image_url", "http://www.example.com");
             j.put("cta", "go go go");
             j.put("cta_url", "http://news.ycombinator.com");
@@ -296,10 +327,10 @@ public class MainActivity extends Activity {
             j.put("id", 123);
             j.put("message_id", 456);
             j.put("type", InAppNotification.Type.TAKEOVER.toString());
-            j.put("title", "test in app notification");
-            j.put("body", "in app notification body");
+            j.put("title", "Notifying you!");
+            j.put("body", "Check out this baller picture of the golden gate bridge.");
             j.put("image_url", "http://www.example.com");
-            j.put("cta", "go go go");
+            j.put("cta", "Done");
             j.put("cta_url", "http://news.ycombinator.com");
         } catch (JSONException e) { }
 

@@ -44,6 +44,12 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Show survey"
+        android:onClick="showSurvey" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Show mini in app"
         android:onClick="showMiniNotification" />
 
