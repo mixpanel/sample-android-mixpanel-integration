@@ -65,7 +65,11 @@
              app notifications every time a new Activity is displayed. To disable this behavior,
              add the following line. The default value for this option is set to true. -->
         <meta-data android:name="com.mixpanel.android.MPConfig.AutoShowMixpanelUpdates"
-               android:value="false" />
+                   android:value="true" />
+        <meta-data android:name="com.mixpanel.android.MPConfig.TestMode"
+                   android:value="true" />
+        <meta-data android:name="com.mixpanel.android.MPConfig.EnableDebugLogging"
+                   android:value="true" />
 
         <activity
             android:name=".MainActivity"
