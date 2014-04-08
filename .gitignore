@@ -2,3 +2,7 @@
 gen/
 bin/
 local.properties
+.gradle/
+.idea/
+build/
+sample-android-mixpanel-integration.iml
