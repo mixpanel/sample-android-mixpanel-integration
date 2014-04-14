@@ -1,13 +1,4 @@
-package com.mixpanel.example.hello;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+package com.mixpanel.android.mpmetrics;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -27,14 +18,17 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
-import com.mixpanel.android.mpmetrics.BackgroundCapture;
-import com.mixpanel.android.mpmetrics.InAppFragment;
-import com.mixpanel.android.mpmetrics.InAppNotification;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
-import com.mixpanel.android.mpmetrics.Survey;
-import com.mixpanel.android.mpmetrics.UpdateDisplayState;
 import com.mixpanel.android.surveys.SurveyActivity;
 import com.mixpanel.android.util.ActivityImageUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
 /**
  * A little application that allows people to update their Mixpanel information,
@@ -271,8 +265,10 @@ public class MainActivity extends Activity {
 
             BackgroundCapture.captureBackground(this, new BackgroundCapture.OnBackgroundCapturedListener() {
                 public void onBackgroundCaptured(Bitmap bitmapCaptured, int highlightColorCaptured) {
-                    final UpdateDisplayState.DisplayState surveyDisplay =
-                            new UpdateDisplayState.DisplayState.SurveyState(s, highlightColorCaptured, bitmapCaptured);
+                    final UpdateDisplayState.DisplayState.SurveyState surveyDisplay = new UpdateDisplayState.DisplayState.SurveyState(s);
+                    surveyDisplay.setBackground(bitmapCaptured);
+                    surveyDisplay.setHighlightColor(highlightColorCaptured);
+
                     final int intentId = UpdateDisplayState.proposeDisplay(surveyDisplay, "ASDF", "ASDF");
                     assert intentId > 0; // Since we hold the lock, and !hasCurrentProposal
 

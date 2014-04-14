@@ -8,7 +8,7 @@
   name in several places before your application will work.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mixpanel.example.hello"
+    package="com.mixpanel.android.mpmetrics"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -47,8 +47,8 @@
 
       Where ${application_package} is the package name declared in your <manifest> element.
      -->
-    <permission android:name="com.mixpanel.example.hello.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-    <uses-permission android:name="com.mixpanel.example.hello.permission.C2D_MESSAGE" />
+    <permission android:name="com.mixpanel.android.mpmetrics.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.mixpanel.android.mpmetrics.permission.C2D_MESSAGE" />
 
     <application
         android:allowBackup="true"
@@ -92,7 +92,7 @@
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <category android:name="com.mixpanel.example.hello" />
+                <category android:name="com.mixpanel.android.mpmetrics" />
            </intent-filter>
         </receiver>
 
