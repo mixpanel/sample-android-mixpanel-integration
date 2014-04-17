@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.android.tools.build:gradle:0.9.+'
     }
 }
 
@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     // for some reason, the signed pom specifies a package type of aar.asc, adding @aar resolves the correct file
-    compile "com.mixpanel.android:mixpanel-android:4.0.0@aar"
+    compile "com.mixpanel.android:mixpanel-android:4.1.0@aar"
 }
 
 android {
@@ -45,8 +45,4 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.9'
 }

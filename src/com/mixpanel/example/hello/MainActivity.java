@@ -108,13 +108,6 @@ public class MainActivity extends Activity {
 
         mMixpanel.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);
 
-        // You can call enableLogAboutMessagesToMixpanel to see
-        // how messages are queued and sent to the Mixpanel servers.
-        // This is useful for debugging, but should be disabled in
-        // production code.
-        // mMixpanel.logPosts();
-
-
         setContentView(R.layout.activity_main);
     }
 
