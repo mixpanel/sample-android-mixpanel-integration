@@ -1,18 +1,18 @@
 # Sample Android Application for Mixpanel Integration
 
-This repository contains a sample application demonstrating how you
+This repository contains two sample applications demonstrating how you
 can use Mixpanel in your Android apps.
 
 ## Getting Started
 
-The sample application can be build using either Android Studio or Eclipse.
+The sample applications can be built using either Android Studio or Eclipse.
 
 ### Using Android Studio
 Integration in Android Studio is very simple.
 
 - Clone this git repository (the instructions are at the top of the page)
 - Within Android Studio, go to "File > Import Project"
-- Select the directory you just cloned.
+- Select either the SimpleMixpanelExample or AdvancedMixpanelExample folder.
 - When the gradle popup shows up, choose "use gradle default wrapper (recommended)" and click OK
 
 You should now be able to run the sample application
@@ -22,7 +22,7 @@ To import it into your workspace:
 
 - Clone this git repository (the instructions are at the top of the page)
 - Within Eclipse, go to "Import... > General > Existing Projects into Workspace"
-- Select the directory you just cloned.
+- Select either the SimpleMixpanelExample or AdvancedMixpanelExample folder.
 
 Next you'll need to import the mixpanel-android library and associate it as a dependency
 (see http://mixpanel.com/help/reference/android#installing-eclipse for more details)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="4.2.0" >
+        <source path="/Users/anlu/Desktop/MixpanelDev/sample-android-mixpanel-integration/SimpleMixpanelExample/build/exploded-aar/com.mixpanel.android/mixpanel-android/4.2.0/assets" />
+    </dataSet>
+    <dataSet config="main" >
+        <source path="/Users/anlu/Desktop/MixpanelDev/sample-android-mixpanel-integration/SimpleMixpanelExample/assets" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/Users/anlu/Desktop/MixpanelDev/sample-android-mixpanel-integration/SimpleMixpanelExample/build-types/debug/assets" />
+    </dataSet>
+
+</merger>
