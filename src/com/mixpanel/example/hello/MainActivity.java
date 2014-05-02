@@ -1,14 +1,5 @@
 package com.mixpanel.example.hello;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -25,6 +16,15 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
 /**
  * A little application that allows people to update their Mixpanel information,
@@ -155,6 +155,13 @@ public class MainActivity extends Activity {
         } catch(final JSONException e) {
             throw new RuntimeException("Could not encode hour of the day in JSON");
         }
+
+        // If you have surveys or notifications, and you have set AutoShowMixpanelUpdates set to false,
+        // the onResume function is a good place to call the functions to display surveys or
+        // in app notifications. It is safe to call both these methods right after each other,
+        // since they do nothing if a notification or survey is already showing.
+        mMixpanel.getPeople().showNotificationIfAvailable(this);
+        mMixpanel.getPeople().showSurveyIfAvailable(this);
     }
 
     // Associated with the "Send to Mixpanel" button in activity_main.xml
