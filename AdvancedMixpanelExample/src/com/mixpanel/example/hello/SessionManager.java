@@ -49,7 +49,6 @@ import java.util.UUID;
  *                                  session.getSessionLength()/1000 + " seconds and is now closed");
  *              }
  *          });
- *          this._sessionManager.startSession();
  *      }
  *
  *      @Override

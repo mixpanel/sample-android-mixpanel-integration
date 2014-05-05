@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
      *
      *   Paste it below (where you see "YOUR API TOKEN")
      */
-    public static final String MIXPANEL_API_TOKEN = "YOUR API TOKEN";
+    public static final String MIXPANEL_API_TOKEN = "5210a76830423a281f7c3032272e8e29";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +73,23 @@ public class MainActivity extends Activity {
         // that will be used for people analytics. You must set this explicitly in order
         // to dispatch people data.
 
+        // The length of a session is defined as the time between a call to startSession() and a
+        // call to endSession() after which there is not another call to startSession() for at
+        // least 15 seconds. If a session has been started and another startSession() function is
+        // called, it is a no op. getSessionLength() returns the session time in milliseconds
+        this._sessionManager = SessionManager.getInstance(this, new SessionManager.SessionCompleteCallback() {
+            @Override
+            public void onSessionComplete(SessionManager.Session session) {
+                try {
+                    JSONObject j = new JSONObject();
+                    j.put("ms length", session.getSessionLength());
+                    mMixpanel.track("Session Ended", j);
+                } catch (JSONException j) {
+                    Log.e(LOGTAG, "Failed to track session time", j);
+                }
+            }
+        });
+
         setContentView(R.layout.activity_main);
     }
 
@@ -86,6 +103,10 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
+        // By placing startSession() in onResume and endSession in onPause() for all your activities,
+        // we allow _sessionManager to properly accumulate time for a session.
+        this._sessionManager.startSession();
+
         // If you have surveys or notifications, and you have set AutoShowMixpanelUpdates set to false,
         // the onResume function is a good place to call the functions to display surveys or
         // in app notifications. If you would like to control exactly which notification or survey
@@ -95,7 +116,15 @@ public class MainActivity extends Activity {
         // in the Surveys tab.
         mMixpanel.getPeople().showSurveyById(1234, this);
         mMixpanel.getPeople().showNotificationById(5678, this);
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // By placing startSession() in onResume and endSession in onPause() for all your activities,
+        // we allow _sessionManager to properly accumulate time for a session.
+        this._sessionManager.endSession();
     }
 
     // Associated with the "Send to Mixpanel" button in activity_main.xml
@@ -234,6 +263,7 @@ public class MainActivity extends Activity {
     }
 
     private MixpanelAPI mMixpanel;
+    private SessionManager _sessionManager;
     private static final String MIXPANEL_DISTINCT_ID_NAME = "Mixpanel Example $distinctid";
     private static final int PHOTO_WAS_PICKED = 2;
     private static final String LOGTAG = "Mixpanel Example Application";
