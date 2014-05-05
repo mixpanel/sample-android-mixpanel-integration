@@ -22,13 +22,10 @@ import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Random;
 
 /**
- * A little application that allows people to update their Mixpanel information,
- * and receive push notifications from a Mixpanel project.
+ * This is a sample application that demonstrates some advanced usages of Mixpanel.
  *
  * For more information about integrating Mixpanel with your Android application,
  * please check out:
@@ -56,31 +53,6 @@ public class MainActivity extends Activity {
      */
     public static final String MIXPANEL_API_TOKEN = "YOUR API TOKEN";
 
-    /*
-     * In order for your app to receive push notifications, you will need to enable
-     * the Google Cloud Messaging for Android service in your Google APIs console. To do this:
-     *
-     * - Navigate to https://code.google.com/apis/console
-     * - Select "Services" from the menu on the left side of the screen
-     * - Scroll down until you see the row labeled "Google Cloud Messaging for Android"
-     * - Make sure the switch next to the service name says "On"
-     *
-     * To identify this application with your Google API account, you'll also need your sender id from Google.
-     * You can get yours by logging in to the Google APIs Console at https://code.google.com/apis/console
-     * Once you have logged in, your sender id will appear as part of the URL in your browser's address bar.
-     * The URL will look something like this:
-     *
-     *     https://code.google.com/apis/console/b/0/#project:256660625236
-     *                                                       ^^^^^^^^^^^^
-     *
-     * The twelve-digit number after 'project:' is your sender id. Paste it below (where you see "YOUR SENDER ID")
-     *
-     * There are also some changes you will need to make to your AndroidManifest.xml file to
-     * declare the permissions and receiver capabilities you'll need to get your push notifications working.
-     * You can take a look at this application's AndroidManifest.xml file for an example of what is needed.
-     */
-    public static final String ANDROID_PUSH_SENDER_ID = "YOUR SENDER ID";
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,13 +73,6 @@ public class MainActivity extends Activity {
         // that will be used for people analytics. You must set this explicitly in order
         // to dispatch people data.
 
-        // People analytics must be identified separately from event analytics.
-        // The data-sets are separate, and may have different unique keys (distinct_id).
-        // We recommend using the same distinct_id value for a given user in both,
-        // and identifying the user with that id as early as possible.
-
-        mMixpanel.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);
-
         setContentView(R.layout.activity_main);
     }
 
@@ -121,47 +86,16 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        final long nowInHours = hoursSinceEpoch();
-        final int hourOfTheDay = hourOfTheDay();
-
-        // For our simple test app, we're interested tracking
-        // when the user views our application.
-
-        // It will be interesting to segment our data by the date that they
-        // first viewed our app. We use a
-        // superProperty (so the value will always be sent with the
-        // remainder of our events) and register it with
-        // registerSuperPropertiesOnce (so no matter how many times
-        // the code below is run, the events will always be sent
-        // with the value of the first ever call for this user.)
-        // all the change we make below are LOCAL. No API requests are made.
-        try {
-            final JSONObject properties = new JSONObject();
-            properties.put("first viewed on", nowInHours);
-            properties.put("user domain", "(unknown)"); // default value
-            mMixpanel.registerSuperPropertiesOnce(properties);
-        } catch (final JSONException e) {
-            throw new RuntimeException("Could not encode hour first viewed as JSON");
-        }
-
-        // Now we send an event to Mixpanel. We want to send a new
-        // "App Resumed" event every time we are resumed, and
-        // we want to send a current value of "hour of the day" for every event.
-        // As usual,all of the user's super properties will be appended onto this event.
-        try {
-            final JSONObject properties = new JSONObject();
-            properties.put("hour of the day", hourOfTheDay);
-            mMixpanel.track("App Resumed", properties);
-        } catch(final JSONException e) {
-            throw new RuntimeException("Could not encode hour of the day in JSON");
-        }
-
         // If you have surveys or notifications, and you have set AutoShowMixpanelUpdates set to false,
         // the onResume function is a good place to call the functions to display surveys or
-        // in app notifications. It is safe to call both these methods right after each other,
-        // since they do nothing if a notification or survey is already showing.
-        mMixpanel.getPeople().showNotificationIfAvailable(this);
-        mMixpanel.getPeople().showSurveyIfAvailable(this);
+        // in app notifications. If you would like to control exactly which notification or survey
+        // you would like to show at a given time, you may use the showNotificationById
+        // or the showSurveyById methods. The ID for a notification may be found in the URL in the
+        // notification builder. The ID for a survey may be found in the URL after clicking on a survey
+        // in the Surveys tab.
+        mMixpanel.getPeople().showSurveyById(1234, this);
+        mMixpanel.getPeople().showNotificationById(5678, this);
+
     }
 
     // Associated with the "Send to Mixpanel" button in activity_main.xml
@@ -287,20 +221,6 @@ public class MainActivity extends Activity {
         final byte[] randomBytes = new byte[32];
         random.nextBytes(randomBytes);
         return Base64.encodeToString(randomBytes, Base64.NO_WRAP | Base64.NO_PADDING);
-    }
-
-    ///////////////////////////////////////////////////////
-    // conveniences
-
-    private int hourOfTheDay() {
-        final Calendar calendar = Calendar.getInstance();
-        return calendar.get(Calendar.HOUR_OF_DAY);
-    }
-
-    private long hoursSinceEpoch() {
-        final Date now = new Date();
-        final long nowMillis = now.getTime();
-        return nowMillis / 1000 * 60 * 60;
     }
 
     private String domainFromEmailAddress(String email) {
