@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -15,12 +16,14 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
 
@@ -51,16 +54,19 @@ public class MainActivity extends Activity {
      *
      *   Paste it below (where you see "YOUR API TOKEN")
      */
-    public static final String MIXPANEL_API_TOKEN = "5210a76830423a281f7c3032272e8e29";
+    public static final String MIXPANEL_API_TOKEN = "YOUR API TOKEN";
+
+    public static final String ANDROID_PUSH_SENDER_ID = "YOUR SENDER ID";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String trackingDistinctId = getTrackingDistinctId();
 
+        setContentView(R.layout.activity_main);
+
         // Initialize the Mixpanel library for tracking and push notifications.
         mMixpanel = MixpanelAPI.getInstance(this, MIXPANEL_API_TOKEN);
-
 
         // We also identify the current user with a distinct ID, and
         // register ourselves for push notifications from Mixpanel.
@@ -90,7 +96,11 @@ public class MainActivity extends Activity {
             }
         });
 
-        setContentView(R.layout.activity_main);
+        // Begin the registration process for GCM. In this advanced implementation, we do not call
+        // the Mixpanel helper function mMixpanel.initPushHandling(). Instead, we will use a custom
+        // CustomGCMReceiver which gives you greater control over what you can do with the push
+        // notification data.
+        registerInBackground();
     }
 
     @Override
@@ -223,6 +233,31 @@ public class MainActivity extends Activity {
                 }
             }
         }
+    }
+
+    private void registerInBackground() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(MainActivity.this);
+                    String regid = gcm.register(ANDROID_PUSH_SENDER_ID);
+
+                    // Once you have the registration ID for this device, you need to send it to
+                    // Mixpanel so that we can send push notifications to this device on your behalf.
+                    mMixpanel.getPeople().setPushRegistrationId(regid);
+
+                    // In your app, you may continue to send the send the registration ID to your own
+                    // backend and persist it on the device somehow.
+                    // sendRegistrationIdToBackend();
+                    // storeRegistrationId(context, regid);
+                } catch (IOException ex) {
+                    Log.e(LOGTAG, "Error registering for GCM", ex);
+                }
+
+                return null;
+            }
+        }.execute(null, null, null);
     }
 
     private String getTrackingDistinctId() {

@@ -13,7 +13,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="19" />
 
     <!--
@@ -96,11 +96,10 @@
                   android:theme="@style/com_mixpanel_android_SurveyActivityTheme"/>
 
         <!-- This receiver will allow your application to register for and receive Mixpanel push notifications -->
-        <receiver android:name="com.mixpanel.android.mpmetrics.GCMReceiver"
+        <receiver android:name=".CustomGCMReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                 <category android:name="com.mixpanel.example.hello" />
            </intent-filter>
         </receiver>
