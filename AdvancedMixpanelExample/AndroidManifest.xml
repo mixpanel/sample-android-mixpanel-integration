@@ -81,7 +81,7 @@
             android:value="true" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.mixpanel.example.advanced.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -96,7 +96,7 @@
                   android:theme="@style/com_mixpanel_android_SurveyActivityTheme"/>
 
         <!-- This receiver will allow your application to register for and receive Mixpanel push notifications -->
-        <receiver android:name=".CustomGCMReceiver"
+        <receiver android:name="com.mixpanel.example.advanced.CustomGCMReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />

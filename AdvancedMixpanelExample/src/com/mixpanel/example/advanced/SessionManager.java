@@ -1,4 +1,4 @@
-package com.mixpanel.example.hello;
+package com.mixpanel.example.advanced;
 
 import android.content.Context;
 import android.os.Handler;

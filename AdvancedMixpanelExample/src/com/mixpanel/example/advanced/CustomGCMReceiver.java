@@ -1,4 +1,4 @@
-package com.mixpanel.example.hello;
+package com.mixpanel.example.advanced;
 
 import android.app.Notification;
 import android.app.NotificationManager;
