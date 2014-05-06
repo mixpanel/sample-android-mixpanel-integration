@@ -30,6 +30,9 @@ import java.util.Random;
 
 /**
  * This is a sample application that demonstrates some advanced usages of Mixpanel.
+ * If you are just beginning to implement Mixpanel in your application,
+ * we recommend looking at the simple Mixpanel example first, and then use this application as
+ * a reference once you need to have a more advanced integration.
  *
  * For more information about integrating Mixpanel with your Android application,
  * please check out:
