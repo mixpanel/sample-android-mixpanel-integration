@@ -1,4 +1,4 @@
-package com.mixpanel.example.hello;
+package com.mixpanel.example.advanced;
 
 import android.content.Context;
 import android.os.Handler;
@@ -49,7 +49,6 @@ import java.util.UUID;
  *                                  session.getSessionLength()/1000 + " seconds and is now closed");
  *              }
  *          });
- *          this._sessionManager.startSession();
  *      }
  *
  *      @Override

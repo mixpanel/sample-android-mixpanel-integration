@@ -81,7 +81,7 @@
             android:value="true" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.mixpanel.example.simple.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
