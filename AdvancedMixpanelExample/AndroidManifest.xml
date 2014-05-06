@@ -63,7 +63,9 @@
 
         <!-- The Mixpanel library will automatically attempt to show available surveys or in
              app notifications every time a new Activity is displayed. To disable this behavior,
-             add the following line. The default value for this option is set to true. -->
+             add the following line. The default value for this option is set to true. You should only
+             disable this option if you plan on managing when you display notifications or surveys
+             manually. -->
         <meta-data android:name="com.mixpanel.android.MPConfig.AutoShowMixpanelUpdates"
                android:value="false" />
 
