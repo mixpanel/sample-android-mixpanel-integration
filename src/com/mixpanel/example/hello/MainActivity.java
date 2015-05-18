@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
      *
      *   Paste it below (where you see "YOUR API TOKEN")
      */
-    public static final String MIXPANEL_API_TOKEN = "YOUR API TOKEN";
+    public static final String MIXPANEL_API_TOKEN = "24fcc08e84883f98e67ea0cfa75bf29f";
 
     /*
      * In order for your app to receive push notifications, you will need to enable
@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
      * declare the permissions and receiver capabilities you'll need to get your push notifications working.
      * You can take a look at this application's AndroidManifest.xml file for an example of what is needed.
      */
-    public static final String ANDROID_PUSH_SENDER_ID = "YOUR SENDER ID";
+    public static final String ANDROID_PUSH_SENDER_ID = "256980666236";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
