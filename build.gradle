@@ -16,14 +16,14 @@ repositories {
 dependencies {
     compile 'com.google.android.gms:play-services-base:7.3.0'
     compile 'com.google.android.gms:play-services-gcm:7.3.0'
-    compile "com.mixpanel.android:mixpanel-android:4.8.0"
+    compile "com.mixpanel.android:mixpanel-android:4.+"
 }
 
 android {
     defaultConfig {
         applicationId "com.mixpanel.example.hello"
         minSdkVersion 9
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
