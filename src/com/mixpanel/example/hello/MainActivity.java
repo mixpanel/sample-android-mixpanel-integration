@@ -161,7 +161,6 @@ public class MainActivity extends Activity {
         // in app notifications. It is safe to call both these methods right after each other,
         // since they do nothing if a notification or survey is already showing.
         mMixpanel.getPeople().showNotificationIfAvailable(this);
-        mMixpanel.getPeople().showSurveyIfAvailable(this);
     }
 
     // Associated with the "Send to Mixpanel" button in activity_main.xml
