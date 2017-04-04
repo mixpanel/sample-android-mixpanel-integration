@@ -14,8 +14,8 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services-gcm:10.2.0'
-    compile "com.mixpanel.android:mixpanel-android:4.+"
+    compile 'com.google.android.gms:play-services-gcm:10.0.1'
+    compile "com.mixpanel.android:mixpanel-android:5.+"
 
 }
 
