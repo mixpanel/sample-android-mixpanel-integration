@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.3'
@@ -10,19 +11,19 @@ buildscript {
 apply plugin: 'com.android.application'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
     compile 'com.google.android.gms:play-services-gcm:10.0.1'
-    compile "com.mixpanel.android:mixpanel-android:5.+"
-
+    compile "com.mixpanel.android:mixpanel-android:5.2.1-SNAPSHOT"
 }
 
 android {
     defaultConfig {
         applicationId "com.mixpanel.example.hello"
-        minSdkVersion 9
+        minSdkVersion 11
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
