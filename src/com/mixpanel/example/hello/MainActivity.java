@@ -79,7 +79,6 @@ public class MainActivity extends Activity {
      * declare the permissions and receiver capabilities you'll need to get your push notifications working.
      * You can take a look at this application's AndroidManifest.xml file for an example of what is needed.
      */
-    public static final String ANDROID_PUSH_SENDER_ID = "256980666236";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,7 +105,6 @@ public class MainActivity extends Activity {
         // We recommend using the same distinct_id value for a given user in both,
         // and identifying the user with that id as early as possible.
 
-        mMixpanel.getPeople().initPushHandling(ANDROID_PUSH_SENDER_ID);
 
         setContentView(R.layout.activity_main);
     }
