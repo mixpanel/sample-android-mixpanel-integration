@@ -19,7 +19,8 @@ repositories {
 
 dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
-    implementation 'com.mixpanel.android:mixpanel-android:5.5.0'
+    implementation 'com.mixpanel.android:mixpanel-android:5.8.0'
+    implementation 'com.android.installreferrer:installreferrer:1.1'
 }
 
 

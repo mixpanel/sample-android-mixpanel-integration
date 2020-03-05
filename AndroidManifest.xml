@@ -72,12 +72,6 @@
         <activity android:name="com.mixpanel.android.takeoverinapp.TakeoverInAppActivity"
                   android:theme="@style/com_mixpanel_android_TakeoverInAppActivityTheme"/>
 
-        <!-- This receiver will allow your application to record referrer parameters as super properties automatically -->
-        <receiver android:name="com.mixpanel.android.mpmetrics.InstallReferrerReceiver" android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
-            </intent-filter>
-        </receiver>
         <!-- Mixpanel FCM Messaging Service. -->
         <service
             android:name="com.mixpanel.android.mpmetrics.MixpanelFCMMessagingService"
