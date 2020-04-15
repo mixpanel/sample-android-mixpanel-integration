@@ -13,7 +13,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.EditText;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -166,59 +165,8 @@ public class MainActivity extends Activity {
     // and set some persistent properties that will be sent with
     // all future track() calls using MixpanelAPI.registerSuperProperties()
     public void sendToMixpanel(final View view) {
-
-        final EditText firstNameEdit = (EditText) findViewById(R.id.edit_first_name);
-        final EditText lastNameEdit = (EditText) findViewById(R.id.edit_last_name);
-        final EditText emailEdit = (EditText) findViewById(R.id.edit_email_address);
-
-        final String firstName = firstNameEdit.getText().toString();
-        final String lastName = lastNameEdit.getText().toString();
-        final String email = emailEdit.getText().toString();
-
-        final MixpanelAPI.People people = mMixpanel.getPeople();
-
-        // Update the basic data in the user's People Analytics record.
-        // Unlike events, People Analytics always stores the most recent value
-        // provided.
-        people.set("$first_name", firstName);
-        people.set("$last_name", lastName);
-        people.set("$email", email);
-
-        // We also want to keep track of how many times the user
-        // has updated their info.
-        people.increment("Update Count", 1L);
-
-        // Mixpanel events are separate from Mixpanel people records,
-        // but it might be valuable to be able to query events by
-        // user domain (for example, if they represent customer organizations).
-        //
-        // We use the user domain as a superProperty here, but we call registerSuperProperties
-        // instead of registerSuperPropertiesOnce so we can overwrite old values
-        // as we get new information.
-        try {
-            final JSONObject domainProperty = new JSONObject();
-            domainProperty.put("user domain", domainFromEmailAddress(email));
-            mMixpanel.registerSuperProperties(domainProperty);
-        } catch (final JSONException e) {
-            throw new RuntimeException("Cannot write user email address domain as a super property");
-        }
-
-        // In addition to viewing the updated record in mixpanel's UI, it might
-        // be interesting to see when and how many and what types of users
-        // are updating their information, so we'll send an event as well.
-        // You can call track with null if you don't have any properties to add
-        // to an event (remember all the established superProperties will be added
-        // before the event is dispatched to Mixpanel)
-        mMixpanel.track("update info button clicked", null);
-    }
-
-    // This is an example of how you can use Mixpanel's revenue tracking features from Android.
-    public void recordRevenue(final View view) {
-        final MixpanelAPI.People people = mMixpanel.getPeople();
-        // Call trackCharge() with a floating point amount
-        // (for example, the amount of money the user has just spent on a purchase)
-        // and an optional set of properties describing the purchase.
-        people.trackCharge(1.50, null);
+        Intent viewIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("pong://start?referrer=samsung_app_1"));
+        this.startActivity(viewIntent);
     }
 
     @Override
@@ -230,14 +178,6 @@ public class MainActivity extends Activity {
         // is important to call flush() to send any unsent events
         // before your application is taken out of memory.
         mMixpanel.flush();
-    }
-
-    ////////////////////////////////////////////////////
-
-    public void setBackgroundImage(final View view) {
-        final Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, PHOTO_WAS_PICKED);
     }
 
     @Override
